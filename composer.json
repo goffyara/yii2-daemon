@@ -1,0 +1,13 @@
+{
+    "name": "goffyara/yii2-daemon",
+    "license": "MIT",
+    "minimum-stability": "stable",
+    "require": {
+        "yiisoft/yii2": "^2.0.0"
+    },
+    "autoload": {
+        "psr-4": {
+            "goffyara\\daemon\\": "src/"
+        }
+    }
+}
