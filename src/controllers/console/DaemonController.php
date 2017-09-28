@@ -171,7 +171,7 @@ abstract class DaemonController extends Controller implements DaemonInterFace
 
     private function pidToFile($pid)
     {
-        $path = $this->pidPath;
+        $path = Yii::getAlias($this->pidPath);
         FileHelper::createDirectory($path);
         $pidFile = "$path/{$this->id}.pid";
 
