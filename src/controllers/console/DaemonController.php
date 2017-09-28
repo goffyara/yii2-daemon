@@ -13,6 +13,7 @@ abstract class DaemonController extends Controller implements DaemonInterFace
     public $sleep = 5;
     public $noCheck = false;
     public $_pid;
+    public $pidPath = '@runtime/daemons';
     private $_gpid;
     protected $_stop = false;
 
@@ -170,7 +171,7 @@ abstract class DaemonController extends Controller implements DaemonInterFace
 
     private function pidToFile($pid)
     {
-        $path = Yii::$app->getModule('daemon')->path;
+        $path = $this->pidPath;
         FileHelper::createDirectory($path);
         $pidFile = "$path/{$this->id}.pid";
 
@@ -199,6 +200,6 @@ abstract class DaemonController extends Controller implements DaemonInterFace
 
     private function getPidFilePath($alias)
     {
-        return Yii::$app->getModule('daemon')->path . '/' . $alias .'.pid';
+        return Yii::getAlias($this->pidPath) . '/' . $alias .'.pid';
     }
 }
