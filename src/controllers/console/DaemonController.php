@@ -6,6 +6,7 @@ use yii;
 use yii\console\Controller;
 use yii\helpers\Console;
 use yii\helpers\FileHelper;
+use yii\base\Exception;
 
 abstract class DaemonController extends Controller implements DaemonInterFace
 {
@@ -72,7 +73,7 @@ abstract class DaemonController extends Controller implements DaemonInterFace
                 //вывод логов не дожидаясь окончания работы
                 Yii::$app->log->logger->flush(true);
             }
-        } catch (\Exception $e) {
+        } catch (\Throwable $e) {
             $this->proccessUnregister($this->id);
             $this->stderr('Ошибка при выполнении процесса ' .$this->id . PHP_EOL, Console::FG_RED);
             throw $e;
