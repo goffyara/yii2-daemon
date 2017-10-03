@@ -21,7 +21,7 @@ class Module extends \yii\base\Module
     public function init()
     {
         parent::init();
-        $this->controllerNamespace = 'app\modules\daemon\controllers\console';
+        $this->controllerNamespace = 'goffyara\daemon\controllers\console';
         $this->path = Yii::getAlias($this->path);
     }
 }

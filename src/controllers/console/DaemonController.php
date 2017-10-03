@@ -65,12 +65,20 @@ abstract class DaemonController extends Controller implements DaemonInterFace
 
         $this->proccessRegister($this->_pid);
 
-        while (!$this->_stop) {
-            sleep($this->sleep);
-            $this->actionJob();
-            //вывод логов не дожидаясь окончания работы
-            Yii::$app->log->logger->flush(true);
+        try {
+            while (!$this->_stop) {
+                sleep($this->sleep);
+                $this->actionJob();
+                //вывод логов не дожидаясь окончания работы
+                Yii::$app->log->logger->flush(true);
+            }
+        } catch (\Exception $e) {
+            $this->proccessUnregister($this->id);
+            $this->stderr('Ошибка при выполнении процесса ' .$this->id . PHP_EOL, Console::FG_RED);
+            throw $e;
+            return static::EXIT_CODE_ERROR;
         }
+
 
         $this->proccessUnregister($this->id);
         $this->stdout('демон корректно остановлен ' .$this->id . PHP_EOL, Console::FG_GREEN);
