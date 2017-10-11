@@ -16,7 +16,6 @@ abstract class DaemonController extends Controller implements DaemonInterFace
     public $_pid;
     public $pidPath = '@runtime/daemons';
     private $_gpid;
-    protected $_stop = false;
 
     /**
      * @inheritdoc
@@ -45,9 +44,16 @@ abstract class DaemonController extends Controller implements DaemonInterFace
         switch ($signal) {
             case SIGTERM:
                 $this->stdout('получен сигнал SIGTERM процессом ' . $this->id . '(' . getmypid() . ')' . PHP_EOL, Console::FG_YELLOW);
+                $this->proccessUnregister($this->id);
+                Yii::$app->log->logger->flush(true);
+                exit(Controller::EXIT_CODE_NORMAL);
+                break;
+
             case SIGINT:
                 $this->stdout('получен сигнал SIGINT процессом ' . $this->id  . '(' . getmypid() . ')' . PHP_EOL, Console::FG_YELLOW);
-                $this->_stop = true;
+                $this->proccessUnregister($this->id);
+                Yii::$app->log->logger->flush(true);
+                exit(Controller::EXIT_CODE_NORMAL);
                 break;
         }
     }
@@ -67,11 +73,12 @@ abstract class DaemonController extends Controller implements DaemonInterFace
         $this->proccessRegister($this->_pid);
 
         try {
-            while (!$this->_stop) {
+            while (true) {
                 sleep($this->sleep);
                 $this->actionJob();
                 //вывод логов не дожидаясь окончания работы
                 Yii::$app->log->logger->flush(true);
+                pcntl_signal_dispatch();
             }
         } catch (\Throwable $e) {
             $this->proccessUnregister($this->id);
@@ -79,11 +86,6 @@ abstract class DaemonController extends Controller implements DaemonInterFace
             throw $e;
             return static::EXIT_CODE_ERROR;
         }
-
-
-        $this->proccessUnregister($this->id);
-        $this->stdout('демон корректно остановлен ' .$this->id . PHP_EOL, Console::FG_GREEN);
-        return static::EXIT_CODE_NORMAL;
     }
 
 
@@ -131,16 +133,6 @@ abstract class DaemonController extends Controller implements DaemonInterFace
     protected function proccessUnregister($alias)
     {
         $this->deletePidFile($alias);
-    }
-
-    public function hasStopSignal()
-    {
-        pcntl_signal_dispatch();
-        if ($this->_stop) {
-            return true;
-        }
-
-        return false;
     }
 
     private function getPid()
