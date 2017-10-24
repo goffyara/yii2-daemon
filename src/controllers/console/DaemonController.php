@@ -39,7 +39,7 @@ abstract class DaemonController extends Controller implements DaemonInterFace
      * @param  [type] $status [description]
      * @return [type]         [description]
      */
-    protected function signalHandler($signal, $pid = null, $status = null)
+    public function signalHandler($signal, $pid = null, $status = null)
     {
         switch ($signal) {
             case SIGTERM:
