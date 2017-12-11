@@ -2,12 +2,27 @@
     "name": "goffyara/yii2-daemon",
     "license": "MIT",
     "minimum-stability": "stable",
+    "keywords": ["yii", "daemon"],
+    "type": "yii2-extension",
     "require": {
-        "yiisoft/yii2": "^2.0.0"
+        "php": ">=5.5.0",
+        "yiisoft/yii2": "~2.0.13"
+    },
+    "require-dev": {
+        "symfony/process": "*",
+        "yiisoft/yii2-debug": "*",
+        "yiisoft/yii2-gii": "*",
+        "phpunit/phpunit": "~4.4"
     },
     "autoload": {
         "psr-4": {
             "goffyara\\daemon\\": "src/"
         }
-    }
+    },
+    "repositories": [
+        {
+            "type": "composer",
+            "url": "https://asset-packagist.org"
+        }
+    ]
 }
